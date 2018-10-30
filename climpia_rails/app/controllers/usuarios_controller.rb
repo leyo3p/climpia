@@ -17,9 +17,15 @@ class UsuariosController < ApplicationController
   # POST /usuarios
   def create
     @usuario = Usuario.new(usuario_params)
-
     if @usuario.save
-      render json: @usuario, status: :created, location: @usuario
+       # Cliente
+       if (@usuario.id_tipo_usuario == 1)
+          #@cliente = Cliente.find_or_create_by(usuario_id: @usuario.id)
+          @cliente = Cliente.find_or_create_by(
+            id: @usuario.id, usuario_id: @usuario.id,
+            correo_electronico: @usuario.email)
+          render json: @usuario, status: :created, location: @usuario
+       end
     else
       render json: @usuario.errors, status: :unprocessable_entity
     end
@@ -44,13 +50,23 @@ class UsuariosController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     
     def set_usuario
-      @usuario = Usuario.find(params[:id])
-      if (@usuario.id == current_usuario.id)
-      else
-          @usuario = nil
+      #Rails.logger = Logger.new(STDOUT)
+      #logger.debug "current_usuario " + current_usuario.inspect
+      #logger.debug "params " + params.inspect
+      
+      if (params[:id] == '0')
+          params[:id] = current_usuario.id
+      end
+
+      @usuario = Usuario.find(params[:id])  
+      if (@usuario != nil)
+         if (current_usuario.id_tipo_usuario == 0 or
+             @usuario.id == current_usuario.id)
+         else
+             @usuario = nil
+         end
       end
     end
-
     
     # Only allow a trusted parameter "white list" through.
     def usuario_params
@@ -58,4 +74,5 @@ class UsuariosController < ApplicationController
       params.require(:usuario).permit(:username, :email, :password, 
         :password_confirmation, :id_tipo_usuario)
     end
+
 end

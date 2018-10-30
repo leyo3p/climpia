@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181010042524) do
+ActiveRecord::Schema.define(version: 20181027125445) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,27 @@ ActiveRecord::Schema.define(version: 20181010042524) do
     t.index ["usuario_id"], name: "index_clientes_on_usuario_id"
   end
 
+  create_table "solicituds", force: :cascade do |t|
+    t.integer "numero_solicitud"
+    t.date "fecha_solicitud"
+    t.string "estado"
+    t.date "fecha_cambio_estado"
+    t.integer "id_tipo_material"
+    t.integer "id_unidad_medida"
+    t.decimal "cantidad"
+    t.string "observaciones"
+    t.bigint "cliente_id", null: false
+    t.bigint "id_ultimo_servicio"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cliente_id"], name: "index_solicituds_on_cliente_id"
+  end
+  #solicitud.estado:
+  # 1-Pendiente recoleccion
+  # 2-Desistida
+  # 3-Finalizada
+
+
   create_table "usuarios", force: :cascade do |t|
     t.string "username"
     t.string "email"
@@ -43,4 +64,5 @@ ActiveRecord::Schema.define(version: 20181010042524) do
   end
 
   add_foreign_key "clientes", "usuarios"
+  add_foreign_key "solicituds", "clientes"
 end
