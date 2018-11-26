@@ -11,3 +11,5 @@ Climpia consta de dos proyectos
   
 El proyecto ionic se encuentra en:
 https://github.com/myriampadilla/climpia_ionic
+
+Los diseños se encuentran en la carpeta prototipo
